@@ -1,0 +1,7 @@
+
+_ Chiếu vua ko chạy được
+_ Phong quân undo ko chuyển lại thành tốt
+_ Ăn quân xong ko quay lại được -> Lưu lại trạng thái bàn cờ
+_ Quân tốt đi hai nước đi lại chỉ có đi được 1 nước
+_ Chưa có AI cờ vua
+_ lúc in ra nước đi còn in ra cả nước khả năng đi
