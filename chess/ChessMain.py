@@ -181,7 +181,7 @@ def drawText(screen, text):
     textObject = font.render(text, 0, p.Color('Black'))
     textLocation = p.Rect(0, 0, WIDTH, HEIGHT).move(WIDTH / 2 - textObject.get_width() / 2 ,HEIGHT / 2 - textObject.get_height() / 2)
     screen.blit(textObject, textLocation)
-    textObject = font.render(text, 0, p.color('Black'))
+    textObject = font.render(text, 0, p.Color('Black'))
     screen.blit(textObject, textLocation.move(2, 2)) 
 
 # Chạy hàm main nếu đây là script được thực thi
