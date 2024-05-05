@@ -1,5 +1,6 @@
 import pygame as p
 import ChessEngine
+import SmartMoveFinder
 
 # Khởi tạo Pygame
 p.init()
@@ -13,19 +14,7 @@ IMAGES = {}
 
 # Tải hình ảnh các quân cờ
 def loadImage():
-    pieces = [
-            'wp',
-            'wR',
-            'wN',
-            'wB',
-            'wQ',
-            'wK',
-            'bp',
-            'bR',
-            'bN',
-            'bB',
-            'bQ',
-            'bK']
+    pieces = ['wp','wR','wN','wB','wQ','wK','bp','bR','bN','bB','bQ','bK']
             
     # Tải hình ảnh cho từng quân cờ và lưu vào từ điển IMAGES
     for piece in pieces:
@@ -47,14 +36,17 @@ def main():
     sqSelected = ()
     playerClicks = []
     gameOver = False
+    playerOne = True
+    playerTwo = False
     while running:
+        humenTurn = (gs.whileToMove and playerOne) or (not gs.whileToMove and playerTwo)
         # Vòng lặp xử lý sự kiện
         for e in p.event.get():
             if e.type == p.QUIT:
                 running = False
             #mouse hanler    
             elif e.type == p.MOUSEBUTTONDOWN:
-                if not gameOver:    
+                if not gameOver and humenTurn:   
                     # Lấy vị trí của chuột
                     location = p.mouse.get_pos() #location of move
                     # Tính cột và hàng của ô đã được click
@@ -90,7 +82,16 @@ def main():
                     playerClicks = []
                     moveMade = False
                     animate = False    
-        
+        # AI move finder
+        if not gameOver and not humenTurn:
+            AIMove = SmartMoveFinder.findBestMove(gs, validMoves)
+            if AIMove == None:
+                AIMove = SmartMoveFinder.findRandomMove(validMoves)
+            gs.makeMove(AIMove)
+            moveMade = True
+            animate = True
+
+
         if moveMade:
             if animate:
                 animaMove(gs.moveLog[-1], screen, gs.board, clock)
@@ -102,7 +103,7 @@ def main():
 
         if gs.checkmate:
             gameOver = True
-            if gs.WhileToMove:
+            if gs.whileToMove:
                 drawText(screen, 'Black wins by checkmate')
             else:    
                 drawText(screen, 'White wins by checkmate')
@@ -117,7 +118,7 @@ def main():
 def highlightSquares(screen, gs, validMoves, sqSelected):
     if sqSelected != ():
         r, c = sqSelected
-        if gs.board[r][c][0] == ('w' if gs.WhileToMove else 'b'): #sqselected is a piece
+        if gs.board[r][c][0] == ('w' if gs.whileToMove else 'b'): #sqselected is a piece
             #highlight selected square
             s = p.Surface((SQ_SIZE, SQ_SIZE))
             s.set_alpha(100)
