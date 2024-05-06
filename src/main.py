@@ -46,7 +46,7 @@ class Main:
             pygame.draw.rect(self.screen, button_color, button_rect)
             
             # Vẽ văn bản trên nút
-            font = pygame.font.Font(None, 36)
+            font = pygame.font.SysFont("Helvitca", 36)
             text = font.render("Chơi mới", True, (0, 0, 0))  # Màu đen
             text_rect = text.get_rect(center=button_rect.center)
             self.screen.blit(text, text_rect)
@@ -82,7 +82,7 @@ class Main:
                     if board.squares[clicked_row][clicked_col].has_piece():
                         piece = board.squares[clicked_row][clicked_col].piece
                         # Kiểm tra màu của quân
-                        if piece.color == game.next_player:
+                        if piece.color == game.next_player and game.next_player == 'white':
                             board.calc_moves(piece,clicked_row, clicked_col, bool=True)
                             dragger.save_initial(event.pos)
                             dragger.drag_piece(piece)

@@ -25,7 +25,7 @@ class Board:
             # Hoàn tác nước đi cuối cùng
             self.move(piece, Move(last_move.final, last_move.initial), testing=True)
             # Cập nhật lại các nước đi có thể cho quân cờ sau khi undo
-            self.calc_moves(piece, last_move.final.row, last_move.final.col)
+            # self.calc_moves(piece, last_move.final.row, last_move.final.col) lỗi
         else: 
             return False    
 
@@ -49,7 +49,7 @@ class Board:
                 self.squares[final.row][final.col].piece = piece
                 if not testing:
                     sound = Sound(
-                        os.path.join('../assets/sounds/capture.wav'))
+                        os.path.join('./assets/sounds/capture.wav'))
                     sound.play()
             
             # pawn promotion
@@ -130,8 +130,8 @@ class Board:
 
         #calculate all tho posible move
         def pawn_moves():
-            steps = 1 if piece.moved else 2
-            
+            steps = 2 if row == 1 or row == 6 else 1
+
             # vertical moves
             start = row + piece.dir
             end = row + (piece.dir * (1 + steps)) 
