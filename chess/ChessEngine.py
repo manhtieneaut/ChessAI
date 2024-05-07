@@ -117,10 +117,10 @@ class GameState():
                 self.enpassantPossible = ()
 
             # undo castle right
-                self.castleRightsLog.pop()
-                newRights = self.castleRightsLog[-1]
-                self.curentCastlingRight = CastleRights(newRights.wks, newRights.bks,
-                                                        newRights.wqs, newRights.bqs)
+            self.castleRightsLog.pop()
+            newRights = self.castleRightsLog[-1]
+            self.curentCastlingRight = CastleRights(newRights.wks, newRights.bks,
+                                                    newRights.wqs, newRights.bqs)
 
             # undo castle move    
             if move.isCastleMove:
