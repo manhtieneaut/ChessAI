@@ -1,6 +1,6 @@
 import pygame as p
 import ChessEngine
-import SmartMoveFinder
+import SmartMove
 
 # Khởi tạo Pygame
 p.init()
@@ -84,9 +84,9 @@ def main():
                     animate = False    
         # AI move finder
         if not gameOver and not humenTurn:
-            AIMove = SmartMoveFinder.findBestMove(gs, validMoves)
+            AIMove = SmartMove.findBestMove(gs, validMoves)
             if AIMove == None:
-                AIMove = SmartMoveFinder.findRandomMove(validMoves)
+                AIMove = SmartMove.findRandomMove(validMoves)
             gs.makeMove(AIMove)
             moveMade = True
             animate = True
