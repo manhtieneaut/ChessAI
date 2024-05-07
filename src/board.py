@@ -1,8 +1,8 @@
-from utils.const import *
-from game.square import Square
-from game.piece import *
-from game.move import Move
-from utils.sound import Sound
+from const import *
+from square import Square
+from piece import *
+from move import Move
+from sound import Sound
 import copy
 import os
 
@@ -49,7 +49,7 @@ class Board:
                 self.squares[final.row][final.col].piece = piece
                 if not testing:
                     sound = Sound(
-                        os.path.join('./assets/sounds/capture.wav'))
+                        os.path.join('assets/sounds/capture.wav'))
                     sound.play()
             
             # pawn promotion

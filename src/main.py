@@ -1,7 +1,7 @@
-from utils.const import *
-from game.game import Game
-from game.square import Square
-from game.move import Move
+from const import *
+from game import Game
+from square import Square
+from move import Move
 
 import pygame
 import sys
@@ -12,7 +12,7 @@ class Main:
         pygame.init()
         self.screen = pygame.display.set_mode( (WIDTH, HEIGHT) )
         pygame.display.set_caption('Chess')
-        # icon = pygame.image.load("./assets/images/system-image/system.jpg") 
+        # icon = pygame.image.load("assets/images/system-image/system.jpg") 
         # pygame.display.set_icon(icon)
         self.game = Game()
         self.menu_active = True
@@ -28,7 +28,7 @@ class Main:
                     if button_rect.collidepoint(pygame.mouse.get_pos()):
                         self.menu_active = False  # Chuyển trạng thái để bắt đầu trò chơi
             # Load và vẽ hình nền
-            menu_background = pygame.image.load("./assets/images/system-image/back-menu.jpg")  # Thay "menu_background.jpg" bằng đường dẫn đến tệp hình ảnh của bạn
+            menu_background = pygame.image.load("assets/images/system-image/back-menu.jpg")  # Thay "menu_background.jpg" bằng đường dẫn đến tệp hình ảnh của bạn
             menu_background = pygame.transform.scale(menu_background, (WIDTH, HEIGHT))
             self.screen.blit(menu_background, (0, 0))   
                     
@@ -82,7 +82,7 @@ class Main:
                     if board.squares[clicked_row][clicked_col].has_piece():
                         piece = board.squares[clicked_row][clicked_col].piece
                         # Kiểm tra màu của quân
-                        if piece.color == game.next_player and game.next_player == 'white':
+                        if piece.color == game.next_player:
                             board.calc_moves(piece,clicked_row, clicked_col, bool=True)
                             dragger.save_initial(event.pos)
                             dragger.drag_piece(piece)

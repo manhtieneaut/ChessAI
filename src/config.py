@@ -2,8 +2,8 @@ import pygame
 import os
 
 
-from utils.sound import Sound
-from utils.theme import Theme
+from sound import Sound
+from theme import Theme
 
 class Config:
 
@@ -16,9 +16,9 @@ class Config:
 
         # font
         self.move_sound = Sound(
-            os.path.join('./assets/sounds/move.wav'))
+            os.path.join('assets/sounds/move.wav'))
         self.capture_sound = Sound(
-            os.path.join('./assets/sounds/capture.wav'))
+            os.path.join('assets/sounds/capture.wav'))
 
     def change_theme(self):
         self.idx += 1

@@ -1,6 +1,6 @@
 import pygame
 
-from utils.const import *
+from const import *
 
 class Dragger: 
 
