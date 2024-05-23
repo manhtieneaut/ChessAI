@@ -1,7 +1,13 @@
-
+import pygame
 
 class GameState():
     def __init__(self):
+        pygame.mixer.init()
+
+        self.move_sound = pygame.mixer.Sound('./assets/sounds/move.wav')
+
+        self.capture_sound = pygame.mixer.Sound('./assets/sounds/capture.wav')
+
         self.board = [
             [ "bR" , "bN" , "bB" , "bQ" , "bK" , "bB" , "bN" , "bR" ],
             [ "bp" , "bp" , "bp" , "bp" , "bp" , "bp" , "bp" , "bp" ],
@@ -15,7 +21,7 @@ class GameState():
         
         self.moveFunctions = {'p': self.getPawnMoves, 'R':self.getRookMoves, 'N':self.getKnightMoves,
                             'B': self.getBishopMoves, 'Q':self.getQueenMoves, 'K':self.getKingMoves}
-        self.whileToMove =  True
+        self.whiteToMove =  True
         self.moveLog = []
         self.whiteKingLocation = (7, 4)
         self.blackKingLocation = (0, 4)
@@ -31,7 +37,7 @@ class GameState():
         self.board[move.startRow][move.startCol]  = "--"  
         self.board[move.endRow][move.endCol] = move.pieceMoved
         self.moveLog.append(move) # log the move so we can undo it later
-        self.whileToMove = not self.whileToMove
+        self.whiteToMove = not self.whiteToMove
         if move.pieceMoved == 'wK':
             self.whiteKingLocation = (move.endRow, move.endCol) 
         elif move.pieceMoved == 'bK':
@@ -63,6 +69,11 @@ class GameState():
         self.updateCastleRights(move)
         self.castleRightsLog.append(CastleRights(self.curentCastlingRight.wks, self.curentCastlingRight.bks,
                                             self.curentCastlingRight.wqs, self.curentCastlingRight.bqs))
+         # Play sound
+        if move.pieceCaptured == '--':
+            self.move_sound.play()
+        else:
+            self.capture_sound.play()
 
     
     def updateCastleRights(self, move):
@@ -98,7 +109,7 @@ class GameState():
             self.board[move.endRow][move.endCol] = move.pieceCaptured
 
             # Chuyển lượt chơi sang người chơi tiếp theo.
-            self.whileToMove = not self.whileToMove
+            self.whiteToMove = not self.whiteToMove
 
             # Cập nhật vị trí vua nếu cần thiết.
             if move.pieceMoved == 'wK':
@@ -139,17 +150,17 @@ class GameState():
         # 1 genneral posible move
         moves = self.getAllPossibleMoves()    
         
-        if self.whileToMove:
+        if self.whiteToMove:
             self.getCastleMoves(self.whiteKingLocation[0], self.whiteKingLocation[1], moves)
         else:
             self.getCastleMoves(self.blackKingLocation[0], self.blackKingLocation[1], moves)
 
         for i in range(len(moves) - 1, -1, -1):
             self.makeMove(moves[i])
-            self.whileToMove = not self.whileToMove
+            self.whiteToMove = not self.whiteToMove
             if self.inCheck():
                 moves.remove(moves[i])
-            self.whileToMove = not self.whileToMove
+            self.whiteToMove = not self.whiteToMove
             self.undoMove()
         if len(moves) == 0:
             if self.inCheck():
@@ -165,15 +176,15 @@ class GameState():
         return moves
 
     def inCheck(self):
-        if self.whileToMove:
+        if self.whiteToMove:
             return self.squareUnderAttack(self.whiteKingLocation[0], self.whiteKingLocation[1])
         else:
             return self.squareUnderAttack(self.blackKingLocation[0], self.blackKingLocation[1])
         
     def squareUnderAttack(self, r, c):
-        self.whileToMove = not self.whileToMove
+        self.whiteToMove = not self.whiteToMove
         oopMoves = self.getAllPossibleMoves()
-        self.whileToMove = not self.whileToMove
+        self.whiteToMove = not self.whiteToMove
         for move in oopMoves:
             if move.endRow == r and move.endCol == c:
                 return True
@@ -184,13 +195,13 @@ class GameState():
         for r in range(len(self.board)):
             for c in range(len(self.board[r])):
                 turn = self.board[r][c][0]
-                if (turn == 'w' and self.whileToMove) or (turn == 'b' and not self.whileToMove):
+                if (turn == 'w' and self.whiteToMove) or (turn == 'b' and not self.whiteToMove):
                     piece = self.board[r][c][1]
                     self.moveFunctions[piece](r, c, moves)
         return moves
 
     def getPawnMoves(self, r, c, moves):
-        if self.whileToMove:
+        if self.whiteToMove:
             if self.board[r - 1][c] == "--":
                 moves.append(Move((r, c),(r-1, c), self.board))
                 if r == 6 and self.board[r-2][c] == "--":
@@ -233,7 +244,7 @@ class GameState():
     def getRookMoves(self, r, c, moves):
 
         directions = ((-1, 0), (0, -1), (1, 0), (0, 1))
-        enemyColor = "b" if self.whileToMove else "w"
+        enemyColor = "b" if self.whiteToMove else "w"
         for d in directions:
             for i in range(1, 8):
                 endRow = r + d[0] * i
@@ -252,7 +263,7 @@ class GameState():
 
     def getKnightMoves(self, r, c, moves):
         knightMoves = ((-2, -1), (-2, 1), (-1, -2), (-1, 2), (1, -2), (1, 2),(2, -1), (2, 1))
-        allyColor = "w" if self.whileToMove else "b"
+        allyColor = "w" if self.whiteToMove else "b"
         for m in knightMoves:
             endRow = r + m[0]
             endCol = c + m[1]
@@ -263,7 +274,7 @@ class GameState():
 
     def getBishopMoves(self, r, c, moves):
         directions = ((-1, -1), (-1, 1), (1, -1), (1, 1))
-        enemyColor = "b" if self.whileToMove else "w"
+        enemyColor = "b" if self.whiteToMove else "w"
         for d in directions:
             for i in range(1, 8):
                 endRow = r + d[0] * i
@@ -286,7 +297,7 @@ class GameState():
 
     def getKingMoves(self, r, c, moves):
         king_moves = [(-1, -1), (1, 0), (-1, 1), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 0)]
-        allyColor = "w" if self.whileToMove else "b"
+        allyColor = "w" if self.whiteToMove else "b"
         for i in range(8):
             endRow = r + king_moves[i][0]
             endCol = c + king_moves[i][1]
@@ -299,9 +310,9 @@ class GameState():
     def getCastleMoves(self, r, c, moves):
         if self.squareUnderAttack(r, c):
             return
-        if (self.whileToMove and self.curentCastlingRight.wks) or (not self.whileToMove and self.curentCastlingRight.bks):
+        if (self.whiteToMove and self.curentCastlingRight.wks) or (not self.whiteToMove and self.curentCastlingRight.bks):
             self.getKingsideCastleMoves(r, c, moves)
-        if (self.whileToMove and self.curentCastlingRight.wqs) or (not self.whileToMove and self.curentCastlingRight.bqs):
+        if (self.whiteToMove and self.curentCastlingRight.wqs) or (not self.whiteToMove and self.curentCastlingRight.bqs):
             self.getQueensideCastleMoves(r, c, moves)
         
         

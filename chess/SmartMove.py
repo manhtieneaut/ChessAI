@@ -15,7 +15,7 @@ def findBestMove(gs, validMoves):
     for move in validMoves:
         gs.makeMove(move)
         nextMoves = gs.getValidMoves()
-        score = -findMoveNegaMaxAlphaBeta(gs, nextMoves, DEPTH - 1, -CHECKMATE, CHECKMATE, 1 if gs.whileToMove else -1)
+        score = -findMoveNegaMaxAlphaBeta(gs, nextMoves, DEPTH - 1, -CHECKMATE, CHECKMATE, 1 if gs.whiteToMove else -1)
         if score > maxScore:
             maxScore = score
             bestMove = move
@@ -39,7 +39,7 @@ def findMoveNegaMaxAlphaBeta(gs, validMoves, depth, alpha, beta, turnMultiplier)
 
 def scoreBoard(gs):
     if gs.checkmate:
-        if gs.whileToMove:
+        if gs.whiteToMove:
             return -CHECKMATE
         else:
             return CHECKMATE
