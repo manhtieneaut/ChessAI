@@ -19,6 +19,21 @@ def loadImage():
     for piece in pieces:
         IMAGES[piece] = p.transform.scale(p.image.load("./assets/imgs-80px/" + piece + ".png"), (SQ_SIZE, SQ_SIZE))
 
+# Vẽ menu lên màn hình
+def drawMenu(screen):
+    background = p.image.load("./assets/backgrounds/back1.jpg")  # Tải ảnh nền
+    background = p.transform.scale(background, (WIDTH, HEIGHT))  # Thay đổi kích thước ảnh nền
+    screen.blit(background, (0, 0))  # Vẽ ảnh nền lên toàn màn hình
+    font = p.font.SysFont("Helvitca", 45, True, False)
+    text_start = font.render("Start", True, p.Color('White'))
+    text_ai = font.render("Two players", True, p.Color('White'))
+    text_exit = font.render("Exit", True, p.Color('White'))
+    screen.blit(text_start, (WIDTH // 2 - text_start.get_width() // 2, HEIGHT // 2 - 60))
+    screen.blit(text_ai, (WIDTH // 2 - text_ai.get_width() // 2, HEIGHT // 2))
+    screen.blit(text_exit, (WIDTH // 2 - text_exit.get_width() // 2, HEIGHT // 2 + 60))
+    p.display.flip()
+
+
 # Hàm chính để chạy trò chơi
 def main():
     p.init()
@@ -36,82 +51,99 @@ def main():
     gameOver = False  # Cờ kiểm tra nếu trò chơi kết thúc
     playerOne = True  # Cờ chỉ người chơi một là người chơi
     playerTwo = False  # Cờ chỉ người chơi hai là người chơi
+    showMenu = True  # Cờ hiển thị menu
 
     while running:
-        humanTurn = (gs.whiteToMove and playerOne) or (not gs.whiteToMove and playerTwo)
-        
-        # Vòng lặp xử lý sự kiện
-        for e in p.event.get():
-            if e.type == p.QUIT:  # Nếu người dùng thoát trò chơi
-                running = False
+        if showMenu:
+            drawMenu(screen)
+            for e in p.event.get():
+                if e.type == p.QUIT:
+                    running = False
+                elif e.type == p.MOUSEBUTTONDOWN:
+                    location = p.mouse.get_pos()
+                    if WIDTH // 2 - 100 <= location[0] <= WIDTH // 2 + 100:
+                        if HEIGHT // 2 - 60 <= location[1] <= HEIGHT // 2 - 30:
+                            showMenu = False  # Bắt đầu chơi
+                        elif HEIGHT // 2 <= location[1] <= HEIGHT // 2 + 30:
+                            showMenu = False  # Chơi với AI
+                            playerTwo = True  # Chỉ định AI là người chơi thứ hai
+                        elif HEIGHT // 2 + 60 <= location[1] <= HEIGHT // 2 + 90:
+                            running = False  # Thoát
+        else:
+            humanTurn = (gs.whiteToMove and playerOne) or (not gs.whiteToMove and playerTwo)
             
-            elif e.type == p.MOUSEBUTTONDOWN:  # Nếu nút chuột được nhấn
-                if not gameOver and humanTurn:
-                    location = p.mouse.get_pos()  # Lấy vị trí của chuột
-                    col = location[0] // SQ_SIZE  # Tính cột dựa trên vị trí chuột
-                    row = location[1] // SQ_SIZE  # Tính hàng dựa trên vị trí chuột
-                    if sqSelected == (row, col):  # Nếu cùng một ô được nhấp lại
-                        sqSelected = ()  # Bỏ chọn ô
-                        playerClicks = []  # Xóa các lần nhấp của người chơi
-                    else:
-                        sqSelected = (row, col)  # Chọn ô mới
-                        playerClicks.append(sqSelected)  # Thêm ô được chọn vào danh sách nhấp
-                    if len(playerClicks) == 2:  # Nếu hai ô được chọn
-                        move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)  # Tạo một nước đi
-                        print(move.getChessNotation())  # In nước đi theo ký hiệu cờ vua
-                        for i in range(len(validMoves)):
-                            if move == validMoves[i]:
-                                gs.makeMove(validMoves[i])  # Thực hiện nước đi
-                                moveMade = True  # Đặt cờ moveMade thành True
-                                animate = True  # Đặt cờ animate thành True
-                                sqSelected = ()  # Bỏ chọn các ô
-                                playerClicks = []  # Xóa các lần nhấp của người chơi
-                        if not moveMade:
-                            playerClicks = [sqSelected]  # Đặt lại danh sách nhấp của người chơi về lựa chọn hiện tại
-            
-            elif e.type == p.KEYDOWN:  # Nếu một phím được nhấn
-                if e.key == p.K_z:  # Nếu phím 'z' được nhấn, hoàn tác nước đi
-                    gs.undoMove()
-                    moveMade = True
-                    animate = False
-                if e.key == p.K_r:  # Nếu phím 'r' được nhấn, thiết lập lại trò chơi
-                    gs = ChessEngine.GameState()
-                    validMoves = gs.getValidMoves()
-                    sqSelected = ()
-                    playerClicks = []
-                    moveMade = False
-                    animate = False
+            # Vòng lặp xử lý sự kiện
+            for e in p.event.get():
+                if e.type == p.QUIT:  # Nếu người dùng thoát trò chơi
+                    running = False
+                
+                elif e.type == p.MOUSEBUTTONDOWN:  # Nếu nút chuột được nhấn
+                    if not gameOver and humanTurn:
+                        location = p.mouse.get_pos()  # Lấy vị trí của chuột
+                        col = location[0] // SQ_SIZE  # Tính cột dựa trên vị trí chuột
+                        row = location[1] // SQ_SIZE  # Tính hàng dựa trên vị trí chuột
+                        if sqSelected == (row, col):  # Nếu cùng một ô được nhấp lại
+                            sqSelected = ()  # Bỏ chọn ô
+                            playerClicks = []  # Xóa các lần nhấp của người chơi
+                        else:
+                            sqSelected = (row, col)  # Chọn ô mới
+                            playerClicks.append(sqSelected)  # Thêm ô được chọn vào danh sách nhấp
+                        if len(playerClicks) == 2:  # Nếu hai ô được chọn
+                            move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board)  # Tạo một nước đi
+                            print(move.getChessNotation())  # In nước đi theo ký hiệu cờ vua
+                            for i in range(len(validMoves)):
+                                if move == validMoves[i]:
+                                    gs.makeMove(validMoves[i])  # Thực hiện nước đi
+                                    moveMade = True  # Đặt cờ moveMade thành True
+                                    animate = True  # Đặt cờ animate thành True
+                                    sqSelected = ()  # Bỏ chọn các ô
+                                    playerClicks = []  # Xóa các lần nhấp của người chơi
+                            if not moveMade:
+                                playerClicks = [sqSelected]  # Đặt lại danh sách nhấp của người chơi về lựa chọn hiện tại
+                
+                elif e.type == p.KEYDOWN:  # Nếu một phím được nhấn
+                    if e.key == p.K_z:  # Nếu phím 'z' được nhấn, hoàn tác nước đi
+                        gs.undoMove()
+                        moveMade = True
+                        animate = False
+                    if e.key == p.K_r:  # Nếu phím 'r' được nhấn, thiết lập lại trò chơi
+                        gs = ChessEngine.GameState()
+                        validMoves = gs.getValidMoves()
+                        sqSelected = ()
+                        playerClicks = []
+                        moveMade = False
+                        animate = False
 
-        # AI tìm nước đi
-        if not gameOver and not humanTurn:
-            AIMove = SmartMove.findBestMove(gs, validMoves)  # Tìm nước đi tốt nhất cho AI
-            if AIMove == None:
-                AIMove = SmartMove.findRandomMove(validMoves)  # Nếu không có nước đi tốt nhất, tìm nước đi ngẫu nhiên
-            gs.makeMove(AIMove)  # Thực hiện nước đi của AI
-            moveMade = True
-            animate = True
+            # AI tìm nước đi
+            if not gameOver and not humanTurn:
+                AIMove = SmartMove.findBestMove(gs, validMoves)  # Tìm nước đi tốt nhất cho AI
+                if AIMove == None:
+                    AIMove = SmartMove.findRandomMove(validMoves)  # Nếu không có nước đi tốt nhất, tìm nước đi ngẫu nhiên
+                gs.makeMove(AIMove)  # Thực hiện nước đi của AI
+                moveMade = True
+                animate = True
 
-        if moveMade:  # Nếu có nước đi được thực hiện
-            if animate:
-                animaMove(gs.moveLog[-1], screen, gs.board, clock)  # Hiệu ứng nước đi
-            validMoves = gs.getValidMoves()  # Lấy danh sách mới của các nước đi hợp lệ
-            moveMade = False
-            animate = False
+            if moveMade:  # Nếu có nước đi được thực hiện
+                if animate:
+                    animaMove(gs.moveLog[-1], screen, gs.board, clock)  # Hiệu ứng nước đi
+                validMoves = gs.getValidMoves()  # Lấy danh sách mới của các nước đi hợp lệ
+                moveMade = False
+                animate = False
 
-        drawGameState(screen, gs, validMoves, sqSelected)  # Vẽ trạng thái trò chơi
+            drawGameState(screen, gs, validMoves, sqSelected)  # Vẽ trạng thái trò chơi
 
-        if gs.checkmate:  # Kiểm tra chiếu hết
-            gameOver = True
-            if gs.whiteToMove:
-                drawText(screen, 'Black wins by checkmate')  # Hiển thị thông báo nếu đen thắng
-            else:
-                drawText(screen, 'White wins by checkmate')  # Hiển thị thông báo nếu trắng thắng
-        elif gs.stalemate:  # Kiểm tra hòa
-            gameOver = True
-            drawText(screen, 'Stalemate')  # Hiển thị thông báo hòa
+            if gs.checkmate:  # Kiểm tra chiếu hết
+                gameOver = True
+                if gs.whiteToMove:
+                    drawText(screen, 'Black wins by checkmate')  # Hiển thị thông báo nếu đen thắng
+                else:
+                    drawText(screen, 'White wins by checkmate')  # Hiển thị thông báo nếu trắng thắng
+            elif gs.stalemate:  # Kiểm tra hòa
+                gameOver = True
+                drawText(screen, 'Stalemate')  # Hiển thị thông báo hòa
 
-        clock.tick(MAX_FPS)  # Điều khiển tốc độ khung hình
-        p.display.flip()  # Cập nhật màn hình
+            clock.tick(MAX_FPS)  # Điều khiển tốc độ khung hình
+            p.display.flip()  # Cập nhật màn hình
 
 # Làm nổi bật ô được chọn và các nước đi có thể cho quân cờ được chọn
 def highlightSquares(screen, gs, validMoves, sqSelected):
