@@ -21,13 +21,15 @@ def loadImage():
 
 # Vẽ menu lên màn hình
 def drawMenu(screen):
-    background = p.image.load("./assets/backgrounds/back1.jpg")  # Tải ảnh nền
+    background = p.image.load("./assets/backgrounds/back3.png")  # Tải ảnh nền
     background = p.transform.scale(background, (WIDTH, HEIGHT))  # Thay đổi kích thước ảnh nền
     screen.blit(background, (0, 0))  # Vẽ ảnh nền lên toàn màn hình
+    
     font = p.font.SysFont("Helvitca", 45, True, False)
     text_start = font.render("Start", True, p.Color('White'))
     text_ai = font.render("Two players", True, p.Color('White'))
     text_exit = font.render("Exit", True, p.Color('White'))
+    
     screen.blit(text_start, (WIDTH // 2 - text_start.get_width() // 2, HEIGHT // 2 - 60))
     screen.blit(text_ai, (WIDTH // 2 - text_ai.get_width() // 2, HEIGHT // 2))
     screen.blit(text_exit, (WIDTH // 2 - text_exit.get_width() // 2, HEIGHT // 2 + 60))
@@ -75,7 +77,14 @@ def main():
             # Vòng lặp xử lý sự kiện
             for e in p.event.get():
                 if e.type == p.QUIT:  # Nếu người dùng thoát trò chơi
-                    running = False
+                    gs = ChessEngine.GameState()
+                    validMoves = gs.getValidMoves()
+                    sqSelected = ()
+                    playerClicks = []
+                    moveMade = False
+                    animate = False
+                    showMenu = True
+                    playerTwo = False
                 
                 elif e.type == p.MOUSEBUTTONDOWN:  # Nếu nút chuột được nhấn
                     if not gameOver and humanTurn:

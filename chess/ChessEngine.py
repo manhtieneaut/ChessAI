@@ -33,6 +33,7 @@ class GameState():
                                             self.curentCastlingRight.wqs, self.curentCastlingRight.bqs)]
         
 
+
     def makeMove(self, move):
         self.board[move.startRow][move.startCol]  = "--"  
         self.board[move.endRow][move.endCol] = move.pieceMoved
@@ -69,7 +70,7 @@ class GameState():
         self.updateCastleRights(move)
         self.castleRightsLog.append(CastleRights(self.curentCastlingRight.wks, self.curentCastlingRight.bks,
                                             self.curentCastlingRight.wqs, self.curentCastlingRight.bqs))
-         # Play sound
+        # Play sound
         if move.pieceCaptured == '--':
             self.move_sound.play()
         else:
