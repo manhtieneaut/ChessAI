@@ -6,7 +6,7 @@ import SmartMove
 p.init()
 
 # Các hằng số
-WIDTH = HEIGHT = 512  # Kích thước cửa sổ bàn cờ
+WIDTH = HEIGHT = 750 # Kích thước cửa sổ bàn cờ
 DIMENTION = 8  # Kích thước bàn cờ (8x8)
 SQ_SIZE = HEIGHT // DIMENTION  # Kích thước của mỗi ô vuông trên bàn cờ
 MAX_FPS = 15  # Tốc độ khung hình tối đa của trò chơi
@@ -218,8 +218,8 @@ def animaMove(move, screen, board, clock):
 
 # Vẽ văn bản lên màn hình (ví dụ: thông báo kết thúc trò chơi)
 def drawText(screen, text):
-    font = p.font.SysFont("Helvitca", 32, True, False)  # Định nghĩa phông chữ
-    textObject = font.render(text, 0, p.Color('Black'))  # Tạo văn bản
+    font = p.font.SysFont("Helvitca", 50, True, False)  # Định nghĩa phông chữ
+    textObject = font.render(text, 0, p.Color('White'))  # Tạo văn bản
     textLocation = p.Rect(0, 0, WIDTH, HEIGHT).move(WIDTH / 2 - textObject.get_width() / 2, HEIGHT / 2 - textObject.get_height() / 2)
     screen.blit(textObject, textLocation)  # Hiển thị văn bản lên màn hình
     textObject = font.render(text, 0, p.Color('Black'))

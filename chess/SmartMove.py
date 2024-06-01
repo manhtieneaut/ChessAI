@@ -54,12 +54,12 @@ def scoreBoard(gs):
                 score -= pieceScore[square[1]]
     return score
 
-def scoreMaterial(board):
-    score = 0
-    for row in board:
-        for square in row:
-            if square[0] == 'w':
-                score += pieceScore[square[1]]
-            elif square[0] == 'b':
-                score -= pieceScore[square[1]]
-    return score
+# def scoreMaterial(board):
+#     score = 0
+#     for row in board:
+#         for square in row:
+#             if square[0] == 'w':
+#                 score += pieceScore[square[1]]
+#             elif square[0] == 'b':
+#                 score -= pieceScore[square[1]]
+#     return score

@@ -71,10 +71,10 @@ class GameState():
         self.castleRightsLog.append(CastleRights(self.curentCastlingRight.wks, self.curentCastlingRight.bks,
                                             self.curentCastlingRight.wqs, self.curentCastlingRight.bqs))
         # Play sound
-        if move.pieceCaptured == '--':
-            self.move_sound.play()
-        else:
-            self.capture_sound.play()
+        # if move.pieceCaptured == '--':
+        #     self.move_sound.play()
+        # else:
+        #     self.capture_sound.play()
 
     
     def updateCastleRights(self, move):
