@@ -33,7 +33,14 @@ class GameState():
                                             self.curentCastlingRight.wqs, self.curentCastlingRight.bqs)]
         
 
-
+    def clone(self):
+        """Trả về một bản sao của đối tượng GameState."""
+        cloned_state = GameState()
+        cloned_state.board = [row[:] for row in self.board]  # Sao chép bảng
+        cloned_state.whiteToMove = self.whiteToMove  # Sao chép người chơi hiện tại
+        cloned_state.moveLog = list(self.moveLog)  # Sao chép lịch sử nước đi
+        return cloned_state
+    
     def makeMove(self, move):
         self.board[move.startRow][move.startCol]  = "--"  
         self.board[move.endRow][move.endCol] = move.pieceMoved
@@ -70,7 +77,7 @@ class GameState():
         self.updateCastleRights(move)
         self.castleRightsLog.append(CastleRights(self.curentCastlingRight.wks, self.curentCastlingRight.bks,
                                             self.curentCastlingRight.wqs, self.curentCastlingRight.bqs))
-        # Play sound
+        # # Play sound
         # if move.pieceCaptured == '--':
         #     self.move_sound.play()
         # else:
@@ -204,8 +211,8 @@ class GameState():
     def getPawnMoves(self, r, c, moves):
         if self.whiteToMove:
             if self.board[r - 1][c] == "--":
-                moves.append(Move((r, c),(r-1, c), self.board))
-                if r == 6 and self.board[r-2][c] == "--":
+                moves.append(Move((r, c),(r - 1, c), self.board))
+                if r == 6 and self.board[r - 2][c] == "--":
                     moves.append(Move((r, c),(r - 2, c), self.board))
 
             if c - 1 >= 0: # capture to the left
@@ -223,7 +230,7 @@ class GameState():
         # black pawn move
         else:
             if self.board[r + 1][c] == "--":
-                moves.append(Move((r, c),(r+1, c), self.board))
+                moves.append(Move((r, c),(r + 1, c), self.board))
                 if r == 1 and self.board[r + 2][c] == "--":
                     moves.append(Move((r, c),(r + 2, c), self.board))
 
@@ -362,7 +369,11 @@ class Move():
         # EnpassantMove    
         self.isEnpassantMove = isEnpassantMove
         if self.isEnpassantMove:
-            self.pieceCaptured = 'wp' if self.pieceMoved == 'pb' else 'bp'   
+            # Kiểm tra nếu là quân trắng thì quân đen được bắt và ngược lại
+            if self.pieceMoved[0] == 'w':
+                self.pieceCaptured = 'bp'
+            else:
+                self.pieceCaptured = 'wp' 
 
         # Castle move
         self.isCastleMove = isCastleMove    
