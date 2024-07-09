@@ -21,7 +21,7 @@ class GameState():
         
         self.moveFunctions = {'p': self.getPawnMoves, 'R':self.getRookMoves, 'N':self.getKnightMoves,
                             'B': self.getBishopMoves, 'Q':self.getQueenMoves, 'K':self.getKingMoves}
-        self.whiteToMove =  True
+        self.whiteToMove = True
         self.moveLog = []
         self.whiteKingLocation = (7, 4)
         self.blackKingLocation = (0, 4)

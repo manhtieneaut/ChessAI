@@ -20,22 +20,37 @@ def loadImage():
     # Tải hình ảnh cho từng quân cờ và chỉnh kích thước để phù hợp với ô vuông
     for piece in pieces:
         IMAGES[piece] = p.transform.scale(p.image.load("./assets/imgs-80px/" + piece + ".png"), (SQ_SIZE, SQ_SIZE))
-
 # Vẽ menu lên màn hình
 def drawMenu(screen):
     background = p.image.load("./assets/backgrounds/back3.png")  # Tải ảnh nền
     background = p.transform.scale(background, (WIDTH, HEIGHT))  # Thay đổi kích thước ảnh nền
     screen.blit(background, (0, 0))  # Vẽ ảnh nền lên toàn màn hình
-    
-    font = p.font.SysFont("Helvetica", 45, True, False)
-    text_start = font.render("Start", True, p.Color('White'))
-    text_ai = font.render("Two players", True, p.Color('White'))
-    text_exit = font.render("Exit", True, p.Color('White'))
-    
-    screen.blit(text_start, (WIDTH // 2 - text_start.get_width() // 2, HEIGHT // 2 - 60))
-    screen.blit(text_ai, (WIDTH // 2 - text_ai.get_width() // 2, HEIGHT // 2))
-    screen.blit(text_exit, (WIDTH // 2 - text_exit.get_width() // 2, HEIGHT // 2 + 60))
+
+    startButtonRect = p.Rect(WIDTH // 2 - 100, HEIGHT // 2 - 60, 200, 50)
+    aiButtonRect = p.Rect(WIDTH // 2 - 100, HEIGHT // 2, 200, 50)
+    exitButtonRect = p.Rect(WIDTH // 2 - 100, HEIGHT // 2 + 60, 200, 50)
+
+    drawButton(screen, 'Start', startButtonRect)
+    drawButton(screen, 'Two players', aiButtonRect)
+    drawButton(screen, 'Exit', exitButtonRect)
+
     p.display.flip()
+
+# Vẽ menu lên màn hình
+# def drawMenu(screen):
+#     background = p.image.load("./assets/backgrounds/back3.png")  # Tải ảnh nền
+#     background = p.transform.scale(background, (WIDTH, HEIGHT))  # Thay đổi kích thước ảnh nền
+#     screen.blit(background, (0, 0))  # Vẽ ảnh nền lên toàn màn hình
+    
+#     font = p.font.SysFont("Helvetica", 45, True, False)
+#     text_start = font.render("Start", True, p.Color('White'))
+#     text_ai = font.render("Two players", True, p.Color('White'))
+#     text_exit = font.render("Exit", True, p.Color('White'))
+    
+#     screen.blit(text_start, (WIDTH // 2 - text_start.get_width() // 2, HEIGHT // 2 - 60))
+#     screen.blit(text_ai, (WIDTH // 2 - text_ai.get_width() // 2, HEIGHT // 2))
+#     screen.blit(text_exit, (WIDTH // 2 - text_exit.get_width() // 2, HEIGHT // 2 + 60))
+#     p.display.flip()
 
 # Vẽ nút trên màn hình
 def drawButton(screen, text, rect):
