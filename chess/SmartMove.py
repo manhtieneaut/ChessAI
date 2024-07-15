@@ -14,7 +14,7 @@ def findBestMove(gs, validMoves):
     bestMove = None
     for move in validMoves:
         tempGs = gs.clone()  # Tạo bản sao của trạng thái trò chơi
-        tempGs.makeMove(move)  # Thực hiện nước đi trên bản sao
+        tempGs.makeMove(move, True)  # Thực hiện nước đi trên bản sao
         nextMoves = tempGs.getValidMoves()  # Lấy danh sách nước đi tiếp theo từ bản sao
         score = -findMoveNegaMaxAlphaBeta(tempGs, nextMoves, DEPTH - 1, -CHECKMATE, CHECKMATE, 1 if tempGs.whiteToMove else -1)
         if score > maxScore:
@@ -27,7 +27,7 @@ def findMoveNegaMaxAlphaBeta(gs, validMoves, depth, alpha, beta, turnMultiplier)
         return turnMultiplier * scoreBoard(gs)
     maxScore = -CHECKMATE
     for move in validMoves:
-        gs.makeMove(move)
+        gs.makeMove(move, True)
         nextMoves = gs.getValidMoves()
         score = -findMoveNegaMaxAlphaBeta(gs, nextMoves, depth - 1, -beta, -alpha, -turnMultiplier)
         maxScore = max(maxScore, score)

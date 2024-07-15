@@ -145,7 +145,7 @@ def main():
                             print(move.getChessNotation())  # In nước đi theo ký hiệu cờ vua
                             for i in range(len(validMoves)):
                                 if move == validMoves[i]:
-                                    gs.makeMove(validMoves[i])  # Thực hiện nước đi
+                                    gs.makeMove(validMoves[i], False)  # Thực hiện nước đi
                                     moveMade = True  # Đặt cờ moveMade thành True
                                     animate = True  # Đặt cờ animate thành True
                                     sqSelected = ()  # Bỏ chọn các ô
@@ -167,11 +167,12 @@ def main():
                         animate = False
 
             # AI tìm nước đi
+            # thêm mộ hàm move dùng cho AI
             if not gameOver and not humanTurn:
                 AIMove = SmartMove.findBestMove(gs, validMoves)  # Tìm nước đi tốt nhất cho AI
                 if AIMove == None:
                     AIMove = SmartMove.findRandomMove(validMoves)  # Nếu không có nước đi tốt nhất, tìm nước đi ngẫu nhiên
-                gs.makeMove(AIMove)
+                gs.makeMove(AIMove, False)
                 moveMade = True
                 animate = True
 

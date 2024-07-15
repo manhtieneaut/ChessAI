@@ -41,10 +41,13 @@ class GameState():
         cloned_state.moveLog = list(self.moveLog)  # Sao chép lịch sử nước đi
         return cloned_state
     
-    def makeMove(self, move):
+    def makeMove(self, move, check):
         self.board[move.startRow][move.startCol]  = "--"  
         self.board[move.endRow][move.endCol] = move.pieceMoved
-        self.moveLog.append(move) # log the move so we can undo it later
+        if check == True:
+            not self.moveLog.append(move) # log the move so we can undo it later
+        else:
+            self.moveLog.append(move)
         self.whiteToMove = not self.whiteToMove
         if move.pieceMoved == 'wK':
             self.whiteKingLocation = (move.endRow, move.endCol) 
@@ -77,7 +80,7 @@ class GameState():
         self.updateCastleRights(move)
         self.castleRightsLog.append(CastleRights(self.curentCastlingRight.wks, self.curentCastlingRight.bks,
                                             self.curentCastlingRight.wqs, self.curentCastlingRight.bqs))
-        # # Play sound
+        # Play sound
         # if move.pieceCaptured == '--':
         #     self.move_sound.play()
         # else:
@@ -164,7 +167,7 @@ class GameState():
             self.getCastleMoves(self.blackKingLocation[0], self.blackKingLocation[1], moves)
 
         for i in range(len(moves) - 1, -1, -1):
-            self.makeMove(moves[i])
+            self.makeMove(moves[i], False)
             self.whiteToMove = not self.whiteToMove
             if self.inCheck():
                 moves.remove(moves[i])
